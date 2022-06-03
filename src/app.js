@@ -11,7 +11,6 @@ app.set('json spaces', 2);
 
 //MIDDLEWARES
 app.use(morgan('dev'));
-//const mainRoute = require('./controllers/mainRoute-controller.js');
 
 //ROUTES
 app.use(require('./routes/main-route.js'));
