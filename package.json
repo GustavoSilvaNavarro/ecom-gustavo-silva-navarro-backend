@@ -1,6 +1,5 @@
 {
   "name": "servidores-gustavo-silva-navarro-backend",
-  "type": "module",
   "version": "1.0.0",
   "description": "Backend course Coder Hose - servers",
   "main": "index.js",

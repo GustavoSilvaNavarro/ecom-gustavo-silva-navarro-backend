@@ -1,9 +1,9 @@
 //CALL MODULES
-import { Router } from 'express';
+const { Router } = require('express');
 const router = Router();
 
 //IMPORTING CONTROLLERS
-import { mainController, randomProductController } from '../controllers/mainRoute-controller.js';
+const { mainController, randomProductController } = require('../controllers/mainRoute-controller.js');
 
 //ROUTES
 //Main page
@@ -13,4 +13,4 @@ router.get('/', mainController);
 router.get('/randomProduct', randomProductController);
 
 //EXPORTING ROUTES
-export default router;
+module.exports = router;

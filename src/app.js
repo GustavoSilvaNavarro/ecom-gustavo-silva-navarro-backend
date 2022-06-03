@@ -1,6 +1,6 @@
 //CALL MODULES
-import express from "express";
-import morgan from "morgan";
+const express = require('express');
+const morgan = require('morgan');
 
 //INITIALIZATIONS
 const app = express();
@@ -11,10 +11,10 @@ app.set('json spaces', 2);
 
 //MIDDLEWARES
 app.use(morgan('dev'));
-import mainRoute from './routes/main-route.js';
+//const mainRoute = require('./controllers/mainRoute-controller.js');
 
 //ROUTES
-app.use('/', mainRoute);
+app.use(require('./routes/main-route.js'));
 
 //SERVER
 app.listen(app.get('port'), () => {
