@@ -10,15 +10,19 @@ const app = express();
 //SETTINGS
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.set('port', process.env.PORT || 8080);
-app.set('views', path.join(__dirname, 'views'));
-app.set('json spaces', 2);
+
+//STATIC FILES
+app.use(express.static(path.join(__dirname, 'public')));
 
 //MIDDLEWARES
 app.use(morgan('dev'));
+app.set('json spaces', 2);
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 import mainRoute from './routes/main-route.js';
 
 //ROUTES
-app.use('/', mainRoute);
+app.use('/api/productos', mainRoute);
 
 //SERVER
 app.listen(app.get('port'), () => {
