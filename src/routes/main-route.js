@@ -1,5 +1,5 @@
 //CALL MODULES
-const { Router } = require('express');
+import { Router } from 'express';
 const router = Router();
 
 //IMPORTING CONTROLLERS
@@ -22,4 +22,4 @@ router.put('/:id', updateProduct);
 router.delete('/:id', deleteProduct);
 
 //EXPORTING ROUTES
-module.exports = router;
+export default router;

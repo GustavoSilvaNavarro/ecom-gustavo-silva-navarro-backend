@@ -20,8 +20,10 @@ app.set('json spaces', 2);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 import mainRoute from './routes/main-route.js';
+import enterRoute from './routes/enter-route.js';
 
 //ROUTES
+app.use('/', enterRoute);
 app.use('/api/productos', mainRoute);
 
 //SERVER
