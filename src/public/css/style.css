@@ -19,3 +19,11 @@
     align-items: center;
     justify-content: flex-end;
 }
+
+.userInfoRemove, .productInfoRemoved, .emptyListProducts {
+    display: none;
+}
+
+.brown {
+    color: brown;
+}
