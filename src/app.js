@@ -1,21 +1,16 @@
 //CALL MODULES
 import express from "express";
 import morgan from "morgan";
-import { Server as SocketIo} from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import http from 'http';
-import { socketsEvents } from './server/sockets.js';
 
 //INITIALIZATIONS
 const app = express();
-const server = http.createServer(app); //nuevo
-const io = new SocketIo(server);
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 //SETTINGS
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.set('port', process.env.PORT || 8080);
-app.set('views', path.join(__dirname, 'views'));
+// app.set('json spaces', 2);
 
 //STATIC FILES
 app.use(express.static(path.join(__dirname, 'public')));
@@ -24,11 +19,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+import productsRoutes from './routes/products-routes.js';
+import cartRoutes from './routes/cart-routes.js';
 
-//WEB SOCKETS
-socketsEvents(io);
+//ROUTES
+app.use('/api/products', productsRoutes);
+app.use('/api/carts', cartRoutes);
+
+//NON EXISTENCE ROUTES
+app.use((req, res, next) => {
+    const err = new Error('Not found!');
+    err.status = 404;
+    next(err);
+});
+
+//ERROR HANDLERS
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({ error: { status: err.status || 500, message: err.message } });
+});
 
 //SERVER
-server.listen(app.get('port'), () => {
+app.listen(app.get('port'), () => {
     console.log('Server on Port:', app.get('port'));
 });
