@@ -3,7 +3,7 @@ import { Router } from 'express';
 const router = Router();
 
 //IMPORTING CONTROLLERS
-import { createNewCart, deleteCart, getAllProductsCart, addProduct, deleteProduct } from '../controllers/cart-controllers.js';
+import { createNewCart, deleteCart, getAllProductsCart, addProduct, deleteProduct } from '../controllers/cart-controllers';
 
 //CONTROLLERS
 //Post create cart

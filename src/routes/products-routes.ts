@@ -3,8 +3,8 @@ import { Router } from 'express';
 const router = Router();
 
 //IMPORTING CONTROLLERS
-import { getAllProducts, getOneProduct } from '../controllers/products-controllers.js';
-import adminRoutes from './admin/adminRoutes.js';
+import { getAllProducts, getOneProduct } from '../controllers/products-controllers';
+import adminRoutes from './admin/adminRoutes';
 
 //ROUTES
 //Get all products

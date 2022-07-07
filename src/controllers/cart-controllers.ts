@@ -1,15 +1,32 @@
+import { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 
-//DATA
-let cartsArr = JSON.parse(fs.readFileSync('./src/public/db/carts.json', 'utf-8'));
-let productsArr = JSON.parse(fs.readFileSync('./src/public/db/products.json', 'utf-8'));
+//TYPESCRIPT TYPES
+type SingleProduct = {
+    id: number,
+    nombre: string,
+    timestamp: number,
+    codigo: string,
+    url: string,
+    precio: number,
+    stock: number
+};
 
+type SingleCart = {
+    id: number,
+    timestamp: number,
+    products: SingleProduct[]
+};
+
+//DATA
+let cartsArr: SingleCart[] = JSON.parse(fs.readFileSync('./src/public/db/carts.json', 'utf-8'));
+let productsArr: SingleProduct[] = JSON.parse(fs.readFileSync('./src/public/db/products.json', 'utf-8'));
 
 //Post create new cart
-export const createNewCart = (req, res) => {
+export const createNewCart = (_req: Request, res: Response) => {
     let idCart = 0;
     if(cartsArr.length > 0) {
-        let idAllCarts= [];
+        let idAllCarts: any = [];
 
         cartsArr.forEach(cart => {
             idAllCarts.push(cart.id);
@@ -33,7 +50,7 @@ export const createNewCart = (req, res) => {
 };
 
 //Delete cart
-export const deleteCart = (req, res, next) => {
+export const deleteCart = (req: Request, res: Response, next: NextFunction) => {
     const id = Number(req.params.id);
 
     if(cartsArr.length > 0) {
@@ -47,24 +64,24 @@ export const deleteCart = (req, res, next) => {
                 fs.writeFileSync('./src/public/db/carts.json', JSON.stringify(cartsArr), 'utf-8');
                 res.status(200).send('Carrito eliminado!');
             } else {
-                const err = new Error('Cart does not exist!');
+                const err: any = new Error('Cart does not exist!');
                 err.status = 400;
                 next(err);
             };
         } else {
-            const err = new Error('ID must be a number!');
+            const err: any = new Error('ID must be a number!');
             err.status = 400;
             next(err);
         };
     } else {
-        const err = new Error('Must to register a cart to be able to delete it!');
+        const err: any = new Error('Must to register a cart to be able to delete it!');
         err.status = 400;
         next(err);
     };
 };
 
 //Get all products from cart
-export const getAllProductsCart = (req, res, next) => {
+export const getAllProductsCart = (req: Request, res: Response, next: NextFunction) => {
     const id = Number(req.params.id);
 
     if(cartsArr.length > 0) {
@@ -73,25 +90,26 @@ export const getAllProductsCart = (req, res, next) => {
             if(selectedCart) {
                 res.status(200).json(selectedCart.products);
             } else {
-                const err = new Error('Cart does not exist!');
+                const err: any = new Error('Cart does not exist!');
                 err.status = 400;
                 next(err);
             };
         } else {
-            const err = new Error('ID must be a number!');
+            const err: any = new Error('ID must be a number!');
             err.status = 400;
             next(err);
         };
     } else {
-        const err = new Error('Must to register a cart to be able to see products!');
+        const err: any = new Error('Must to register a cart to be able to see products!');
         err.status = 400;
         next(err);
     };
 };
 
 //POST add products to the cart
-export const addProduct = (req, res, next) => {
-    const { id, idProduct } = req.params;
+export const addProduct = (req: Request, res: Response, next: NextFunction) => {
+    const id: number = Number(req.params.id);
+    const idProduct: number = Number(req.params.idProduct);
 
     if(cartsArr.length > 0) {
         if(productsArr.length > 0) {
@@ -110,36 +128,36 @@ export const addProduct = (req, res, next) => {
                         fs.writeFileSync('./src/public/db/carts.json', JSON.stringify(cartsArr), 'utf-8');
                         res.status(200).send('Producto anadido');
                     } else {
-                        const err = new Error('Product does not exist!');
+                        const err: any = new Error('Product does not exist!');
                         err.status = 400;
                         next(err);
                     };
                 } else {
-                    const err = new Error('Cart does not exist!');
+                    const err: any = new Error('Cart does not exist!');
                     err.status = 400;
                     next(err);
                 };
             } else {
-                const err = new Error('Both IDs must be a number!');
+                const err: any = new Error('Both IDs must be a number!');
                 err.status = 400;
                 next(err);
             };
         } else {
-            const err = new Error('Register products to be able to add them to the cart!');
+            const err: any = new Error('Register products to be able to add them to the cart!');
             err.status = 400;
             next(err);
         };
     } else {
-        const err = new Error('Register a cart to be able to add products to it!');
+        const err: any = new Error('Register a cart to be able to add products to it!');
         err.status = 400;
         next(err);
     };
 };
 
 //DELETE a product by id cart and id product
-export const deleteProduct = (req, res, next) => {
-    const id = Number(req.params.id);
-    const idProduct = Number(req.params.idProduct);
+export const deleteProduct = (req: Request, res: Response, next: NextFunction) => {
+    const id: number = Number(req.params.id);
+    const idProduct: number = Number(req.params.idProduct);
     
     if(cartsArr.length > 0) {
         if(productsArr.length > 0) {
@@ -157,27 +175,27 @@ export const deleteProduct = (req, res, next) => {
                         fs.writeFileSync('./src/public/db/carts.json', JSON.stringify(cartsArr), 'utf-8');
                         res.status(200).send('Producto Eliminado');
                     } else {
-                        const err = new Error('Product does not exist!');
+                        const err: any = new Error('Product does not exist!');
                         err.status = 400;
                         next(err);
                     };
                 } else {
-                    const err = new Error('Cart does not exist!');
+                    const err: any = new Error('Cart does not exist!');
                     err.status = 400;
                     next(err);
                 };
             } else {
-                const err = new Error('Both IDs must be a number!');
+                const err: any = new Error('Both IDs must be a number!');
                 err.status = 400;
                 next(err);
             };
         } else {
-            const err = new Error('Register products to be able to delete them from the cart!');
+            const err: any = new Error('Register products to be able to delete them from the cart!');
             err.status = 400;
             next(err);
         };
     } else {
-        const err = new Error('Register a cart to be able to delete products from it!');
+        const err: any = new Error('Register a cart to be able to delete products from it!');
         err.status = 400;
         next(err);
     };

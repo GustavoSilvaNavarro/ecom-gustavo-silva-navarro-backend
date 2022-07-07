@@ -1,23 +1,35 @@
 //CALL MODULES
+import { Request, Response, NextFunction } from "express";
 import fs from 'fs';
 
+//TYPESCRIPT TYPES
+type SingleProduct = {
+    id: number,
+    nombre: string,
+    timestamp: number,
+    codigo: string,
+    url: string,
+    precio: number,
+    stock: number
+};
+
 //DATA
-let productsArr = JSON.parse(fs.readFileSync('./src/public/db/products.json', 'utf-8'));
+let productsArr: SingleProduct[] = JSON.parse(fs.readFileSync('./src/public/db/products.json', 'utf-8'));
 
 //CONTROLLERS
 //Get all products
-export const getAllProducts = (req, res, next) => {
+export const getAllProducts = (_req: Request, res: Response, next: NextFunction) => {
     if(productsArr.length > 0) {
         res.status(200).json(productsArr);
     } else {
-        const err = new Error('Product list empty!');
+        const err: any = new Error('Product list empty!');
         err.status = 400;
         next(err);
     };
 };
 
 //Get one poduct by its id
-export const getOneProduct = (req, res, next) => {
+export const getOneProduct = (req: Request, res: Response, next: NextFunction) => {
     const id = Number(req.params.id);
 
     if(productsArr.length > 0) {
@@ -26,31 +38,31 @@ export const getOneProduct = (req, res, next) => {
             if(product) {
                 res.status(200).json(product);
             } else {
-                const err = new Error('Product does not exist!');
+                const err: any = new Error('Product does not exist!');
                 err.status = 400;
                 next(err);
             };
         } else {
-            const err = new Error('ID must be a number!');
+            const err: any = new Error('ID must be a number!');
             err.status = 400;
             next(err);
         };
     } else {
-        const err = new Error('Please register a product!');
+        const err: any = new Error('Please register a product!');
         err.status = 400;
         next(err);
     };
 };
 
 //Post Add new product
-export const addNewProduct = (req, res) => {
+export const addNewProduct = (req: Request, res: Response) => {
     let objectId = 0;
     const { nombre, description, codigo, url, precio, stock } = req.body;
 
     if(productsArr.length === 0) {
         objectId = 1;
     } else {
-        let idArr = [];
+        let idArr: any = [];
         productsArr.forEach(product => {
             idArr.push(product.id);
         });
@@ -77,7 +89,7 @@ export const addNewProduct = (req, res) => {
 };
 
 //Put Update product bu its id
-export const updateProduct = (req, res, next) => {
+export const updateProduct = (req: Request, res: Response, next: NextFunction) => {
     const id = Number(req.params.id);
     if(productsArr.length > 0) {
         if(!isNaN(id)) {
@@ -102,24 +114,24 @@ export const updateProduct = (req, res, next) => {
 
                 res.status(200).send('Producto actualizado!');
             } else {
-                const err = new Error('Product does not exist!');
+                const err: any = new Error('Product does not exist!');
                 err.status = 400;
                 next(err);
             };
         } else {
-            const err = new Error('ID must be a number!');
+            const err: any = new Error('ID must be a number!');
             err.status = 400;
             next(err);
         };
     } else {
-        const err = new Error('Please register a product to update!');
+        const err: any = new Error('Please register a product to update!');
         err.status = 400;
         next(err);
     };
 };
 
 //DELETE a product base on its ID
-export const deleteProduct = (req, res, next) => {
+export const deleteProduct = (req: Request, res: Response, next: NextFunction) => {
     const id = Number(req.params.id);
     if(productsArr.length > 0) {
         if(!isNaN(id)) {
@@ -131,17 +143,17 @@ export const deleteProduct = (req, res, next) => {
                 fs.writeFileSync('./src/public/db/products.json', JSON.stringify(productsArr), 'utf-8');
                 res.status(200).send('Producto eliminado!');
             } else {
-                const err = new Error('Product does not exist!');
+                const err: any = new Error('Product does not exist!');
                 err.status = 400;
                 next(err);
             };
         } else {
-            const err = new Error('ID must be a number!');
+            const err: any = new Error('ID must be a number!');
             err.status = 400;
             next(err);
         };
     } else {
-        const err = new Error('Please register a product to update!');
+        const err: any = new Error('Please register a product to update!');
         err.status = 400;
         next(err);
     };
