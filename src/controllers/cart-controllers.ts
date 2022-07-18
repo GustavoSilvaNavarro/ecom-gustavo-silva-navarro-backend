@@ -120,10 +120,8 @@ export const addProduct = (req: Request, res: Response, next: NextFunction) => {
                 if(cartSelected) {
                     if(productSelected) {
                         cartSelected.products.push(productSelected);
-                        console.log(cartSelected);
                         const otherCarts = cartsArr.filter(item => item.id !== id);
-                        cartsArr = otherCarts;
-                        console.log(otherCarts);
+                        cartsArr = [...otherCarts, cartSelected];
 
                         fs.writeFileSync('./src/public/db/carts.json', JSON.stringify(cartsArr), 'utf-8');
                         res.status(200).send('Producto anadido');
