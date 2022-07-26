@@ -1,79 +1,36 @@
 //CALL MODULES
 import { Request, Response, NextFunction } from "express";
-import fs from 'fs';
 
-//TYPESCRIPT TYPES
-type SingleProduct = {
-    id: number,
-    nombre: string,
-    timestamp: number,
-    codigo: string,
-    url: string,
-    precio: number,
-    stock: number
-};
-
-//DATA
-let productsArr: SingleProduct[] = JSON.parse(fs.readFileSync('./src/public/db/products.json', 'utf-8'));
+import productsFS from '../containers/daos/products/productsFS'
+//import productsMemory from "../containers/daos/products/productsMeMory";
 
 //CONTROLLERS
 //Get all products
-export const getAllProducts = (_req: Request, res: Response, next: NextFunction) => {
-    if(productsArr.length > 0) {
-        res.status(200).json(productsArr);
-    } else {
-        const err: any = new Error('Product list empty!');
-        err.status = 400;
+export const getAllProducts = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        const allProducts = await productsFS.getAllData();
+        res.status(200).json(allProducts);
+    } catch(err) {
         next(err);
     };
 };
 
 //Get one poduct by its id
-export const getOneProduct = (req: Request, res: Response, next: NextFunction) => {
+export const getOneProduct = async (req: Request, res: Response, next: NextFunction) => {
     const id = Number(req.params.id);
-
-    if(productsArr.length > 0) {
-        if(!isNaN(id)) {
-            const product = productsArr.find(item => item.id === id);
-            if(product) {
-                res.status(200).json(product);
-            } else {
-                const err: any = new Error('Product does not exist!');
-                err.status = 400;
-                next(err);
-            };
-        } else {
-            const err: any = new Error('ID must be a number!');
-            err.status = 400;
-            next(err);
-        };
-    } else {
-        const err: any = new Error('Please register a product!');
-        err.status = 400;
+    try {
+        const product = productsFS.getOneProduct(id);
+        res.status(200).json(product);
+    } catch(err) {
         next(err);
     };
 };
 
 //Post Add new product
-export const addNewProduct = (req: Request, res: Response) => {
-    let objectId = 0;
+export const addNewProduct = async (req: Request, res: Response, next: NextFunction) => {
     const { nombre, description, codigo, url, precio, stock } = req.body;
 
-    if(productsArr.length === 0) {
-        objectId = 1;
-    } else {
-        let idArr: any = [];
-        productsArr.forEach(product => {
-            idArr.push(product.id);
-        });
-
-        const maxId = Math.max(...idArr);
-        objectId = maxId + 1;
-    };
-
-    let newProduct = {
-        id: objectId,
-        timestamp: Date.now(),
+    const dataProduct = {
         nombre,
         description,
         codigo,
@@ -82,79 +39,125 @@ export const addNewProduct = (req: Request, res: Response) => {
         stock: Number(stock)
     };
 
-    productsArr.push(newProduct);
+    try {
+        const id = await productsFS.addProduct(dataProduct);
+        res.status(200).json({ id })
+    } catch(err) {
+        next(err);
+    };
+};
 
-    fs.writeFileSync('./src/public/db/products.json', JSON.stringify(productsArr), 'utf-8');
-    res.status(200).send('Created');
+//Put Update product bu its id
+export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const id = Number(req.params.id);
+
+    const { nombre, description, codigo, url, precio, stock } = req.body;
+
+    const dataUpdated: any = {
+        nombre,
+        description,
+        codigo,
+        url,
+        precio: Number(precio),
+        stock: Number(stock)
+    };
+
+    try{
+        const mess = await productsFS.updateProduct(id, dataUpdated);
+        res.status(200).send(mess);
+    } catch(err) {
+        next(err)
+    };
+};
+
+//DELETE a product base on its ID
+export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const id = Number(req.params.id);
+    try {
+        const mess = await productsFS.deleteProduct(id);
+        res.status(200).send(mess);
+    } catch(err) {
+        next(err);
+    };
+};
+
+
+/*
+//MEMORY
+//Get all products
+export const getAllProducts = (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        const allProducts = productsMemory.getAllData();
+        res.status(200).json(allProducts);
+    } catch(err) {
+        next(err);
+    };
+};
+
+//Get one poduct by its id
+export const getOneProduct = (req: Request, res: Response, next: NextFunction) => {
+    const id = Number(req.params.id);
+    try {
+        const product = productsMemory.getOneProduct(id);
+        res.status(200).json(product);
+    } catch(err) {
+        next(err);
+    };
+};
+
+//Post Add new product
+export const addNewProduct = (req: Request, res: Response, next: NextFunction) => {
+    const { nombre, description, codigo, url, precio, stock } = req.body;
+
+    const dataProduct = {
+        nombre,
+        description,
+        codigo,
+        url,
+        precio: Number(precio),
+        stock: Number(stock)
+    };
+
+    try {
+        const id = productsMemory.addProduct(dataProduct);
+        res.status(200).json({ id })
+    } catch(err) {
+        next(err);
+    };
 };
 
 //Put Update product bu its id
 export const updateProduct = (req: Request, res: Response, next: NextFunction) => {
     const id = Number(req.params.id);
-    if(productsArr.length > 0) {
-        if(!isNaN(id)) {
-            const product = productsArr.find(data => data.id == id);
-            const newArray = productsArr.filter(data => data.id !== id);
-            if(product) {
-                const { nombre, description, codigo, url, precio, stock } = req.body;
-                let productToUpdate = {
-                    id,
-                    timestamp: product.timestamp,
-                    nombre,
-                    description,
-                    codigo,
-                    url,
-                    precio: Number(precio),
-                    stock: Number(stock)
-                };
-    
-                productsArr = [...newArray, productToUpdate];
 
-                fs.writeFileSync('./src/public/db/products.json', JSON.stringify(productsArr), 'utf-8');
+    const { nombre, description, codigo, url, precio, stock } = req.body;
 
-                res.status(200).send('Producto actualizado!');
-            } else {
-                const err: any = new Error('Product does not exist!');
-                err.status = 400;
-                next(err);
-            };
-        } else {
-            const err: any = new Error('ID must be a number!');
-            err.status = 400;
-            next(err);
-        };
-    } else {
-        const err: any = new Error('Please register a product to update!');
-        err.status = 400;
-        next(err);
+    const dataUpdated: any = {
+        nombre,
+        description,
+        codigo,
+        url,
+        precio: Number(precio),
+        stock: Number(stock)
+    };
+
+    try{
+        const mess = productsMemory.updateProduct(id, dataUpdated);
+        res.status(200).send(mess);
+    } catch(err) {
+        next(err)
     };
 };
 
 //DELETE a product base on its ID
 export const deleteProduct = (req: Request, res: Response, next: NextFunction) => {
     const id = Number(req.params.id);
-    if(productsArr.length > 0) {
-        if(!isNaN(id)) {
-            //producto a eliminar
-            const deleteProduct = productsArr.find(item => item.id === id);
-            if(deleteProduct) {
-                const newAllProducts = productsArr.filter(data => data.id !== id);
-                productsArr = newAllProducts;
-                fs.writeFileSync('./src/public/db/products.json', JSON.stringify(productsArr), 'utf-8');
-                res.status(200).send('Producto eliminado!');
-            } else {
-                const err: any = new Error('Product does not exist!');
-                err.status = 400;
-                next(err);
-            };
-        } else {
-            const err: any = new Error('ID must be a number!');
-            err.status = 400;
-            next(err);
-        };
-    } else {
-        const err: any = new Error('Please register a product to update!');
-        err.status = 400;
+    try {
+        const mess = productsMemory.deleteProduct(id);
+        res.status(200).send(mess);
+    } catch(err) {
         next(err);
     };
 };
+
+*/
