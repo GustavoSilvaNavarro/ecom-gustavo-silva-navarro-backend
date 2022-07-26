@@ -40,5 +40,21 @@
                 "stock": 10
             }
         ]
+    },
+    {
+        "id": 4,
+        "timestamp": 1658772809427,
+        "products": [
+            {
+                "id": 4,
+                "timestamp": 1658693770033,
+                "nombre": "Iphone 12",
+                "description": "New Iphone 12 Max pro with IOS 15.5",
+                "codigo": "IP001",
+                "url": "https://res.cloudinary.com/dukuzakaw/image/upload/v1653743999/backendProducts/itemProducts/iphone12_plwbjy.jpg",
+                "precio": 859.99,
+                "stock": 19
+            }
+        ]
     }
 ]

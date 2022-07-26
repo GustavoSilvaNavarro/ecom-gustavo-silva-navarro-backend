@@ -2,7 +2,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 const router = Router();
 
-const admin = false;
+const admin = true;
 
 //IMPORTING CONTROLLERS
 import { addNewProduct, updateProduct, deleteProduct } from '../../controllers/products-controllers';

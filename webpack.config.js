@@ -4,7 +4,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import nodeExternals from 'webpack-node-externals';
 
 export default {
-    mode: 'production',
+    mode: 'development',
     entry: './src/app.ts',
     target: 'node',
     externals: [nodeExternals()],
