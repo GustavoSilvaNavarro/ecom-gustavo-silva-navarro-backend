@@ -4,6 +4,7 @@ import express, { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { connectDB } from './config/dbMongo'
 
 //TYPESCRIPT TYPES
 type ErrorRoute = {
@@ -13,6 +14,7 @@ type ErrorRoute = {
 
 //INITIALIZATIONS
 const app = express();
+connectDB();
 
 //SETTINGS
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -36,7 +38,7 @@ app.use('/api/carts', cartRoutes);
 //NON EXISTENCE ROUTES
 app.use((_req: Request, _res: Response, next: NextFunction) => {
     const err: any = new Error('Not found!');
-    err.status = 404;
+    err.status = 500;
     next(err);
 });
 

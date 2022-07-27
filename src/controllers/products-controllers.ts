@@ -1,10 +1,67 @@
 //CALL MODULES
 import { Request, Response, NextFunction } from "express";
 
-import productsFS from '../containers/daos/products/productsFS'
+//import productsFS from '../containers/daos/products/productsFS'
 //import productsMemory from "../containers/daos/products/productsMeMory";
+import ProductMDB from "../containers/daos/products/productMongo";
 
-//CONTROLLERS
+//CONTROLLERS MONGO
+//Get all products
+export const getAllProducts = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        const allProducts = await ProductMDB.listAllProducts();
+        res.status(200).json(allProducts);
+    } catch(err) {
+        next(err);
+    };
+};
+
+//Get one poduct by its id
+export const getOneProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    try {
+        const product = await ProductMDB.listOneProduct(id);
+        res.status(200).json(product);
+    } catch(err) {
+        next(err);
+    };
+};
+
+// Post Add new product
+export const addNewProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const idProduct = await ProductMDB.addProduct(req.body);
+        res.status(201).json({ id: idProduct });
+    } catch(err) {
+        next(err);
+    };
+};
+
+//Put Update product bu its id
+export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id
+    try{
+        const mess = await ProductMDB.updateOneProduct(id, req.body);
+        res.status(200).send(mess);
+    } catch(err) {
+        next(err)
+    };
+};
+
+//DELETE a product base on its ID
+export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    try {
+        const mess = await ProductMDB.deleteOneProduct(id);
+        res.status(200).send(mess);
+    } catch(err) {
+        next(err);
+    };
+};
+
+
+/*
+//FYLESYSTEM
 //Get all products
 export const getAllProducts = async (_req: Request, res: Response, next: NextFunction) => {
     try {
@@ -80,6 +137,9 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
         next(err);
     };
 };
+*/
+
+
 
 
 /*

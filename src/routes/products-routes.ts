@@ -2,7 +2,7 @@
 import { Router } from 'express';
 const router = Router();
 
-//IMPORTING CONTROLLERS
+// //IMPORTING CONTROLLERS
 import { getAllProducts, getOneProduct } from '../controllers/products-controllers';
 import adminRoutes from './admin/adminRoutes';
 
