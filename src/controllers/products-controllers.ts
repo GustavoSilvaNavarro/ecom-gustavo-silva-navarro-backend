@@ -1,10 +1,72 @@
 //CALL MODULES
 import { Request, Response, NextFunction } from "express";
+import { Timestamp } from 'firebase/firestore'
 
-//import productsFS from '../containers/daos/products/productsFS'
-//import productsMemory from "../containers/daos/products/productsMeMory";
-import ProductMDB from "../containers/daos/products/productMongo";
+// import productsFS from '../containers/daos/products/productsFS'
+// import productsMemory from "../containers/daos/products/productsMeMory";
+// import ProductMDB from "../containers/daos/products/productMongo";
+import ProductFireBase from "../containers/daos/products/productFireBase"
 
+
+//CONTROLLERS FIREBASE
+//Get all products
+export const getAllProducts = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        const allProducts = await ProductFireBase.listAllProducts();
+        res.status(200).json(allProducts);
+    } catch(err) {
+        next(err);
+    };
+};
+
+//Get one poduct by its id
+export const getOneProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    try {
+        const product = await ProductFireBase.listOneProduct(id);
+        res.status(200).json(product);
+    } catch(err) {
+        next(err);
+    };
+};
+
+// Post Add new product
+export const addNewProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const data = req.body;
+        data.timestamp = Timestamp.now().toDate().toString();
+
+        const idProduct = await ProductFireBase.addProduct(data);
+        res.status(201).json({ id: idProduct });
+    } catch(err) {
+        next(err);
+    };
+};
+
+//Put Update product bu its id
+export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id
+    try{
+        const mess = await ProductFireBase.updateOneProduct(id, req.body);
+        res.status(200).send(mess);
+    } catch(err) {
+        next(err)
+    };
+};
+
+//DELETE a product base on its ID
+export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    try {
+        const mess = await ProductFireBase.deleteOneProduct(id);
+        res.status(200).send(mess);
+    } catch(err) {
+        next(err);
+    };
+};
+
+
+/*
 //CONTROLLERS MONGO
 //Get all products
 export const getAllProducts = async (_req: Request, res: Response, next: NextFunction) => {
@@ -58,7 +120,7 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
         next(err);
     };
 };
-
+*/
 
 /*
 //FYLESYSTEM
