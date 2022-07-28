@@ -4,7 +4,7 @@ import express, { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { connectDB } from './config/dbMongo'
+// import { connectDB } from './config/dbMongo'
 
 //TYPESCRIPT TYPES
 type ErrorRoute = {
@@ -14,7 +14,7 @@ type ErrorRoute = {
 
 //INITIALIZATIONS
 const app = express();
-connectDB();
+// connectDB();
 
 //SETTINGS
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

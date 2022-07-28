@@ -58,14 +58,15 @@ class ContainerFirebase {
     //UPDATE DATA
     async updateData(id: string, dataToUpdate: any, ruta: any) {
         try {
-            let updatedData;
+            const datoUpdated = await this.listOneData(id, ruta);
+
             if(ruta === 'Product') {
-                updatedData = await Products.doc(id).update(dataToUpdate);
+                await Products.doc(id).update(dataToUpdate);
             } else {
-                updatedData = await Carts.doc(id).update(dataToUpdate);
+                await Carts.doc(id).update(dataToUpdate);
             };
 
-            if(updatedData.exists) {
+            if(datoUpdated) {
                 return `${ruta} updated!`;
             } else {
                 const err: any = new Error(`${ruta} does not exist. It can not be modified!`);
@@ -80,14 +81,15 @@ class ContainerFirebase {
     //Delete data
     async deleteData(id: string, ruta: any) {
         try {
-            let deletedData;
+            const dato = await this.listOneData(id, ruta);
+
             if(ruta === 'Product') {
-                deletedData = await Products.doc(id).delete();
+                await Products.doc(id).delete();
             } else {
-                deletedData = await Carts.doc(id).delete();
+                await Carts.doc(id).delete();
             };
 
-            if(deletedData.exists) {
+            if(dato) {
                 return `${ruta} deleted!`;
             } else {
                 const err: any = new Error(`${ruta} does not exist. It can not be deleted!`);
